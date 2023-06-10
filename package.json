@@ -1,0 +1,36 @@
+{
+  "name": "kontext",
+  "version": "1.0.0",
+  "description": "A discord bot that uses embeddings for searching messages based on context",
+  "main": "app.js",
+  "scripts": {
+    "start": "TS_NODE_BASEURL=build node -r tsconfig-paths/register ./build/app.js",
+    "start:dev": "npx nodemon",
+    "commands:deploy": "NODE_ENV=development ts-node -r tsconfig-paths/register ./src/discord/deploy-commands.ts",
+    "build": "rimraf ./build && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "f0lio",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/node": "^20.2.5",
+    "@types/pg": "^8.10.2",
+    "nodemon": "^2.0.22",
+    "rimraf": "^5.0.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.3"
+  },
+  "dependencies": {
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.1.4",
+    "glob": "^10.2.7",
+    "openai": "^3.2.1",
+    "pg": "^8.11.0",
+    "pgvector": "^0.1.4",
+    "redis": "^4.6.7",
+    "winston": "^3.9.0"
+  }
+}
