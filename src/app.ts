@@ -1,5 +1,5 @@
 import { Client } from "@discord/client";
-import OpenAIEmbedding from "@embedding/openai";
+import OpenAIEmbedding, { ModerationModel } from "@embedding/openai";
 import { GatewayIntentBits, Partials } from "discord.js";
 
 const bot = new Client({
@@ -14,9 +14,11 @@ const bot = new Client({
     const embed = new OpenAIEmbedding();
 
     const sampleText = "Robots should not be allowed to vote.";
-    console.log(await embed.getModeration(sampleText));
     console.log(
-      await embed.getModeration(sampleText, "text-moderation-latest")
+      (await embed.getModeration(sampleText, ModerationModel.LATEST)).results
+    );
+    console.log(
+      (await embed.getModeration(sampleText, ModerationModel.STABLE)).results
     );
     console.log(await embed.getEmbedding(sampleText));
   } catch (err) {

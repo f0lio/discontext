@@ -3,14 +3,19 @@ import AEmbedding, {
   TEmbeddingOptions,
 } from "@embedding/abstract.embedding";
 import config from "@embedding/config";
-import {
-  Configuration,
-  CreateModerationResponse,
-  OpenAIApi,
-} from "openai";
+import { Configuration, CreateModerationResponse, OpenAIApi } from "openai";
 
-type TEmbeddingModel = "text-embedding-ada-002";
-type TModerationModel = "text-moderation-latest" | "text-moderation-stable";
+export enum EmbeddingModel {
+  ADA = "text-embedding-ada-002",
+}
+
+export enum ModerationModel {
+  LATEST = "text-moderation-latest",
+  STABLE = "text-moderation-stable",
+}
+
+type TEmbeddingModel = EmbeddingModel.ADA;
+type TModerationModel = ModerationModel.LATEST | ModerationModel.STABLE;
 
 class OpenAIEmbedding extends AEmbedding<
   TModerationModel,
@@ -24,8 +29,8 @@ class OpenAIEmbedding extends AEmbedding<
   readonly #moderationModel;
 
   constructor(
-    model: TEmbeddingModel = "text-embedding-ada-002",
-    moderationModel: TModerationModel = "text-moderation-latest"
+    model: TEmbeddingModel = EmbeddingModel.ADA,
+    moderationModel: TModerationModel = ModerationModel.LATEST
   ) {
     super();
     this.#openai = new OpenAIApi(this.#configuration);
@@ -68,7 +73,7 @@ class OpenAIEmbedding extends AEmbedding<
     return resp.data;
   }
 
-  public  getEmbeddingModel(): string {
+  public getEmbeddingModel(): string {
     return this.#model;
   }
 
