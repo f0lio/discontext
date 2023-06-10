@@ -1,14 +1,15 @@
 export const getENV = (
 	key: string,
+  required = false
 ): string => {
   const value = process.env[key];
   if (!value) {
+    if (!required) return '';
     throw new Error(
       `Environment variable not set: ${key}`
     );
-  } else {
-    return value;
   }
+  return value;
 };
 
 export const startCase = (str: string): string =>
