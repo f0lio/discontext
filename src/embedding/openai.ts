@@ -3,7 +3,9 @@ import AEmbedding, {
   TEmbeddingOptions,
 } from "@embedding/abstract.embedding";
 import config from "@embedding/config";
+import { existsSync, readFile, readFileSync, writeFileSync } from "fs";
 import { Configuration, CreateModerationResponse, OpenAIApi } from "openai";
+import { join } from "path";
 
 export enum EmbeddingModel {
   ADA = "text-embedding-ada-002",
@@ -28,6 +30,9 @@ class OpenAIEmbedding extends AEmbedding<
   readonly #model;
   readonly #moderationModel;
 
+  readonly #CACHE_FILE = "cache.ignore.json";
+  readonly #cacheFile; // the readFileSync result
+
   constructor(
     model: TEmbeddingModel = EmbeddingModel.ADA,
     moderationModel: TModerationModel = ModerationModel.LATEST
@@ -36,6 +41,16 @@ class OpenAIEmbedding extends AEmbedding<
     this.#openai = new OpenAIApi(this.#configuration);
     this.#model = model;
     this.#moderationModel = moderationModel;
+
+    if (config.isProd === false) {
+      if (existsSync(join(__dirname, this.#CACHE_FILE)) === false) {
+        writeFileSync(join(__dirname, this.#CACHE_FILE), "[]");
+      }
+      this.#cacheFile = readFileSync(
+        join(__dirname, this.#CACHE_FILE),
+        "utf-8"
+      );
+    }
   }
 
   public async getEmbedding(
@@ -51,8 +66,17 @@ class OpenAIEmbedding extends AEmbedding<
       delete payload.user;
     }
 
+    // simple cache for dev to avoid hitting the API limit
+    const fromCache = await (this as any).getEmbeddingFromCache(payload);
+    if (fromCache) {
+      console.log("[OpenAI] Using cached embedding for:", text);
+      return fromCache;
+    }
     const resp = await this.#openai.createEmbedding(payload);
-
+    await (this as any).addEmbeddingToCache({
+      ...payload,
+      ...resp.data,
+    });
     return {
       embedding: resp.data.data[0].embedding,
       model: resp.data.model,
@@ -79,6 +103,33 @@ class OpenAIEmbedding extends AEmbedding<
 
   public getModerationModel(): string {
     return this.#moderationModel;
+  }
+
+  public async getEmbeddingFromCache(payload: any): Promise<any> {
+    if (config.isProd === false) {
+      const cache = JSON.parse(this.#cacheFile || "[]");
+      const cached = cache.find(
+        (c: any) =>
+          c.input === payload.input &&
+          c.model === payload.model &&
+          c.user === payload.user
+      );
+      if (cached) {
+        return cached;
+      }
+    }
+    return null;
+  }
+
+  public async addEmbeddingToCache(payload: any): Promise<any> {
+    if (config.isProd === false) {
+      const cache = JSON.parse(this.#cacheFile || "[]");
+      cache.push(payload);
+      writeFileSync(
+        join(__dirname, this.#CACHE_FILE),
+        JSON.stringify(cache, null, 2)
+      );
+    }
   }
 }
 
