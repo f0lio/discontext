@@ -4,13 +4,31 @@ export type TConnectionOptions = {
   user?: string;
   password?: string;
   database?: string;
+  ssl?: boolean;
   params?: string;
 };
 
-export type TEmbedding = {
+export type TVec = number[];
+
+export type TEmbeddingMeta = {
   id: string;
-  embedding: number[];
-  meta?: any;
+  original_text: string;
+  author_id?: string;
+  author_name?: string;
+  timestamp?: number;
+  link?: string;
+};
+
+export type TEmbedding = {
+  embedding: TVec;
+  id?: string; // optional, if not provided, will be generated
+  meta?: TEmbeddingMeta
+};
+
+export type TSearchResult = {
+  id: string;
+  score: number; // similarity score
+  meta?: TEmbeddingMeta
 };
 
 const notImplemented = new Error("Not implemented");
@@ -18,13 +36,18 @@ const notImplemented = new Error("Not implemented");
 abstract class AStorage {
   constructor(connectionOptions: TConnectionOptions, logger?: any) {}
 
-  public async connect() {
-	throw notImplemented;
-  }
-  public getConnection() {
-	throw notImplemented;
+  async connect() {
+    throw notImplemented;
   }
 
+  public getConnection() {
+    throw notImplemented;
+  }
+
+  /**
+   * This is where you should, if necessary, connect to the database and
+   * create tables, etc.
+   */
   public async init() {
     throw notImplemented;
   }
@@ -37,7 +60,10 @@ abstract class AStorage {
     throw notImplemented;
   }
 
-  public async searchEmbedding(embedding: TEmbedding, limit = 10): Promise<TEmbedding[]> {
+  public async searchEmbedding(
+    vector: TVec,
+    limit = 10
+  ): Promise<TSearchResult[]> {
     throw notImplemented;
   }
 

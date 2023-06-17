@@ -135,3 +135,5 @@ build
 
 # custom
 *.ignore*
+
+volumes
