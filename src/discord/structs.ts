@@ -1,11 +1,12 @@
 import {
-  type ChatInputCommandInteraction,
-  type SlashCommandBuilder,
   BaseInteraction,
   ClientEvents,
+  type ChatInputCommandInteraction,
+  type SlashCommandBuilder,
 } from "discord.js";
 
 import { Client } from "@discord/client";
+import { EmbeddingResponse } from "@embedding/abstract.embedding";
 
 type ExecFunction<TInteraction extends BaseInteraction> = (
   client: Client<true>,
@@ -26,6 +27,10 @@ export interface IEvent<K extends keyof ClientEvents> {
     client: Client,
     ...args: ClientEvents[K]
   ) => Promise<void> | void;
+}
+
+export interface IEmbedEngine {
+  getEmbedding: (text: string) => Promise<EmbeddingResponse>;
 }
 
 //   Enums

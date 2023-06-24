@@ -1,11 +1,13 @@
 import config from "@discord/config";
-import { ErrorType, ICommand } from "@discord/structs";
+import { ErrorType, ICommand, IEmbedEngine } from "@discord/structs";
 import { loadCommands, loadEvents } from "@discord/utils/load-handlers";
 import {
   BaseGuildTextChannel,
   Collection,
   Client as DiscordClient,
   EmbedBuilder,
+  Message,
+  MessageCreateOptions,
   PermissionFlagsBits,
   type ButtonInteraction,
   type ChatInputCommandInteraction,
@@ -13,7 +15,6 @@ import {
   type InteractionEditReplyOptions,
   type InteractionReplyOptions,
   type InteractionResponse,
-  type Message,
   type MessagePayload,
   type StringSelectMenuInteraction,
   type TextBasedChannel
@@ -22,13 +23,15 @@ import { basename, join } from "path";
 
 export class Client<
   Ready extends boolean = boolean
->
-extends DiscordClient<Ready> {
-  readonly #botToken= config.botToken
+> extends DiscordClient<Ready> {
+  readonly #botToken = config.botToken;
 
   public commands: Collection<string, ICommand> = new Collection();
 
-  public constructor(options: ClientOptions) {
+  public constructor(
+    options: ClientOptions,
+    readonly embedEngine: IEmbedEngine
+  ) {
     super(options);
   }
 
@@ -76,12 +79,20 @@ extends DiscordClient<Ready> {
       | ChatInputCommandInteraction
       | ButtonInteraction
       | StringSelectMenuInteraction,
-    options: string | MessagePayload | InteractionReplyOptions
-  ): Promise<Message | InteractionResponse | undefined> {
+    options: string | InteractionReplyOptions
+  ): Promise<InteractionResponse | undefined> {
     const { channel } = interaction;
-    if (interaction.inCachedGuild() && channel && !this.#isAllowed(channel))
+    if (interaction.inCachedGuild?.() && channel && !this.#isAllowed(channel))
       return;
     return interaction.reply(options);
+  }
+
+  public async send(
+    channel: TextBasedChannel,
+    options: string | MessagePayload | MessageCreateOptions
+  ): Promise<Message | undefined> {
+    if (!this.#isAllowed(channel)) return;
+    return channel.send(options);
   }
 
   public async editReply(
@@ -111,13 +122,13 @@ extends DiscordClient<Ready> {
       ephemeral: true,
       embeds: [
         new EmbedBuilder()
-        .setColor("Red")
+          .setColor("Red")
           .setAuthor({
             name: this.user.tag,
             iconURL: this.user.displayAvatarURL(),
           })
           .setTitle(`Error: \`${type}\``)
-          .setDescription(message)
+          .setDescription(message),
       ],
     });
   }
