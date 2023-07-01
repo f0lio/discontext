@@ -25,16 +25,16 @@ const event: IEvent<typeof Events.MessageCreate> = {
       
       await client.storage.addEmbedding(messagePayload);
 
-      const embed = new EmbedBuilder()
-        .setColor("#0099ff")
-        .setTitle("Embedding")
-        .setDescription(
-          `prompt_tokens: ${resp.prompt_tokens}\ntotal_tokens: ${resp.total_tokens}\noriginal_text: ${resp.original_text}`
-        );
+      // const embed = new EmbedBuilder()
+      //   .setColor("#0099ff")
+      //   .setTitle("Embedding")
+      //   .setDescription(
+      //     `prompt_tokens: ${resp.prompt_tokens}\ntotal_tokens: ${resp.total_tokens}\noriginal_text: ${resp.original_text}`
+      //   );
 
-      await client.send(message.channel, {
-        embeds: [embed],
-      });
+      // await client.send(message.channel, {
+      //   embeds: [embed],
+      // });
     } catch (err) {
       console.log("catch");
       if (err instanceof Error) {
