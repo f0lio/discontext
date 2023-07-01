@@ -36,7 +36,7 @@ export interface IEmbedEngine {
 
 export interface IStorageEngine {
   addEmbedding: (embedding: TEmbedding) => Promise<QueryStatus>;
-  searchEmbedding: (vector: number[], limit?: number) => Promise<TSearchResult[]>;
+  search: (vector: number[], limit?: number) => Promise<TSearchResult[]>;
 }
 
 //   Enums

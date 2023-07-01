@@ -26,7 +26,8 @@ export type TEmbedding = {
 };
 
 export type TSearchResult = {
-  id: string;
+  // id: string;
+  id: string | number;
   score: number; // similarity score
   meta?: TEmbeddingMeta
 };

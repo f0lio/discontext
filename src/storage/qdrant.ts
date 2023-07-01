@@ -5,7 +5,9 @@ import AStorage, {
   QueryStatus,
   TConnectionOptions,
   TEmbedding,
-  TVec
+  TEmbeddingMeta,
+  TSearchResult,
+  TVec,
 } from "./storage.abstract";
 
 const COLLECTION_CONFIG = {
@@ -27,22 +29,26 @@ class Qdrant extends AStorage {
 
   public async init() {
     try {
-  
-    await this.client.deleteCollection(COLLECTION_CONFIG.NAME);
+      if (config.isProduction === false) {
+        // await this.client.deleteCollection(COLLECTION_CONFIG.NAME);
+        console.log(`[WARN] Collection ${COLLECTION_CONFIG.NAME} deleted`);
+      }
+      if (await this.client.getCollection(COLLECTION_CONFIG.NAME)) {
+        console.log(`[INFO] Collection ${COLLECTION_CONFIG.NAME} exists`);
+        return;
+      }
+      await this.client.createCollection(COLLECTION_CONFIG.NAME, {
+        vectors: {
+          size: COLLECTION_CONFIG.VECTOR_DIMENSION,
+          distance: "Cosine",
+        },
+      });
 
-    await this.client.createCollection(COLLECTION_CONFIG.NAME, {
-      vectors: {
-        size: COLLECTION_CONFIG.VECTOR_DIMENSION,
-        distance: "Cosine",
-      },
-    });
-
-    await this.client.createPayloadIndex(COLLECTION_CONFIG.NAME, {
-      field_name: "original_text",
-      field_schema: "keyword",
-      wait: true,
-    });
-    // console.log("Qdrant collection created", conn);
+      await this.client.createPayloadIndex(COLLECTION_CONFIG.NAME, {
+        field_name: "original_text",
+        field_schema: "keyword",
+        wait: true,
+      });
     } catch (e) {
       console.log(e);
     }
@@ -65,20 +71,28 @@ class Qdrant extends AStorage {
       ],
     });
 
-    const collectionInfo = await this.client.getCollection(COLLECTION_CONFIG.NAME);
+    const collectionInfo = await this.client.getCollection(
+      COLLECTION_CONFIG.NAME
+    );
     // console.log("Qdrant collection info", collectionInfo);
-    console.log("collectionInfo.vector_count", collectionInfo.vectors_count);
+    // console.log("collectionInfo.vector_count", collectionInfo.vectors_count);
     return resp.status.toUpperCase() as QueryStatus;
   }
 
-  public async search(vector: TVec, limit: number = 4): Promise<any> {
-    const result = await this.client.search(COLLECTION_CONFIG.NAME, {
+  public async search(
+    vector: TVec,
+    limit: number = 4
+  ): Promise<TSearchResult[]> {
+    const results = await this.client.search(COLLECTION_CONFIG.NAME, {
       vector,
       limit: limit,
       with_payload: true,
     });
-    // console.log("Qdrant search result", result);
-    return result;
+    // tempo
+    return results.map((res) => ({
+      ...res,
+      meta: res.payload as TEmbeddingMeta,
+    }));
   }
 }
 
