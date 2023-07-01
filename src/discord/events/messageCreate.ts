@@ -11,6 +11,20 @@ const event: IEvent<typeof Events.MessageCreate> = {
     try {
       const resp = await client.embedEngine.getEmbedding(message.content);
 
+      const messagePayload: TEmbedding = {
+        embedding: resp.embedding,
+        meta: {
+          id: message.id,
+          original_text: message.content,
+          author_id: message.author.id,
+          author_name: message.author.username,
+          timestamp: message.createdTimestamp,
+          link: `https://discord.com/channels/${message.guildId}/${message.channelId}/${message.id}`,
+        },
+      };
+      
+      await client.storage.addEmbedding(messagePayload);
+
       const embed = new EmbedBuilder()
         .setColor("#0099ff")
         .setTitle("Embedding")

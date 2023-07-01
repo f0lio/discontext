@@ -25,39 +25,40 @@ const SAMPLES = [
   "Earth surface is covered by water. Oceans are large bodies of water that surround the continents and fill the Earth's great depressions. The oceans are the largest of the Earth's water bodies and are all connected to one another. The oceans are the most important of the world's great biomes. Because of their size, they influence the climate of the Earth and play a major role in the biosphere and the water cycle.",
 ];
 
-
-
-
 (async () => {
   try {
     const embed = new OpenAIEmbedding();
-    const bot = new Client({
-      intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
-      partials: [Partials.Channel],
-    },
-    embed
-    );
-    await bot.init();
-
     const db = new DB();
     await db.init();
-
-    const embeddings = await Promise.all(
-      SAMPLES.map(async (sample) => embed.getEmbedding(sample))
+    const bot = new Client(
+      {
+        intents: [
+          GatewayIntentBits.Guilds,
+          GatewayIntentBits.GuildMessages,
+          GatewayIntentBits.MessageContent,
+        ],
+        partials: [Partials.Channel],
+      },
+      embed,
+      db
     );
-    
-    embeddings.forEach((embedding, index) => {
-      db.add({
-        embedding: embedding.embedding,
-        meta: {
-          id: randomUUID(),
-          author_id: `${index}`,
-          author_name: `author_${index}`,
-          original_text: embedding.original_text || "",
-        },
-      });
-    });
 
+    await bot.init();
+
+    await Promise.all(
+      SAMPLES.map(async (sample, index) => {
+        const resp = await embed.getEmbedding(sample);
+        return db.addEmbedding({
+          embedding: resp.embedding,
+          meta: {
+            id: randomUUID(),
+            author_id: `${index}`,
+            author_name: `author_${index}`,
+            original_text: resp.original_text || "",
+          },
+        });
+      })
+    );
     // embed.getEmbedding("The world is round")
     // .then(({ embedding }) => db.search(embedding))
     // .then((res) => console.log('1', res));
@@ -72,7 +73,6 @@ const SAMPLES = [
     //   .then(({ embedding }) =>
     //     db.search(embedding).then((res) => console.log(res))
     //   );
-
   } catch (err) {
     console.error("LAST", err);
   }

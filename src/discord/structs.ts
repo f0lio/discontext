@@ -7,6 +7,7 @@ import {
 
 import { Client } from "@discord/client";
 import { EmbeddingResponse } from "@embedding/abstract.embedding";
+import { QueryStatus, TEmbedding, TSearchResult } from "@storage/storage.abstract";
 
 type ExecFunction<TInteraction extends BaseInteraction> = (
   client: Client<true>,
@@ -31,6 +32,11 @@ export interface IEvent<K extends keyof ClientEvents> {
 
 export interface IEmbedEngine {
   getEmbedding: (text: string) => Promise<EmbeddingResponse>;
+}
+
+export interface IStorageEngine {
+  addEmbedding: (embedding: TEmbedding) => Promise<QueryStatus>;
+  searchEmbedding: (vector: number[], limit?: number) => Promise<TSearchResult[]>;
 }
 
 //   Enums

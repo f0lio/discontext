@@ -1,12 +1,12 @@
 import { QdrantClient } from "@qdrant/js-client-rest";
+import config from "@storage/config";
+import { v4 as generateId } from "uuid";
 import AStorage, {
+  QueryStatus,
   TConnectionOptions,
   TEmbedding,
-  TSearchResult,
-  TVec,
+  TVec
 } from "./storage.abstract";
-import { v4 as generateId } from "uuid";
-import config from "@storage/config";
 
 const COLLECTION_CONFIG = {
   NAME: "messages",
@@ -48,7 +48,7 @@ class Qdrant extends AStorage {
     }
   }
 
-  public async add(embedding: TEmbedding): Promise<any> {
+  public async addEmbedding(embedding: TEmbedding): Promise<QueryStatus> {
     const id = generateId();
     const resp = await this.client.upsert(COLLECTION_CONFIG.NAME, {
       points: [
@@ -66,7 +66,9 @@ class Qdrant extends AStorage {
     });
 
     const collectionInfo = await this.client.getCollection(COLLECTION_CONFIG.NAME);
-    return resp;
+    // console.log("Qdrant collection info", collectionInfo);
+    console.log("collectionInfo.vector_count", collectionInfo.vectors_count);
+    return resp.status.toUpperCase() as QueryStatus;
   }
 
   public async search(vector: TVec, limit: number = 4): Promise<any> {

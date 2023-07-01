@@ -31,6 +31,8 @@ export type TSearchResult = {
   meta?: TEmbeddingMeta
 };
 
+export type QueryStatus = "OK"  | "ERROR" | "ACKNOWLEDGED" | "UNKNOWN";
+
 const notImplemented = new Error("Not implemented");
 
 abstract class AStorage {
@@ -52,7 +54,7 @@ abstract class AStorage {
     throw notImplemented;
   }
 
-  public async addEmbedding(embedding: TEmbedding): Promise<TEmbedding> {
+  public async addEmbedding(embedding: TEmbedding): Promise<QueryStatus> {
     throw notImplemented;
   }
 

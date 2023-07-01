@@ -1,5 +1,5 @@
 import config from "@discord/config";
-import { ErrorType, ICommand, IEmbedEngine } from "@discord/structs";
+import { ErrorType, ICommand, IEmbedEngine, IStorageEngine } from "@discord/structs";
 import { loadCommands, loadEvents } from "@discord/utils/load-handlers";
 import {
   BaseGuildTextChannel,
@@ -30,7 +30,8 @@ export class Client<
 
   public constructor(
     options: ClientOptions,
-    readonly embedEngine: IEmbedEngine
+    readonly embedEngine: IEmbedEngine,
+    readonly storage: IStorageEngine
   ) {
     super(options);
   }
