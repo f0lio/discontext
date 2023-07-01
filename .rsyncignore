@@ -1,0 +1,16 @@
+node_modules
+dist
+coverage
+build
+.env
+.env.*
+.git
+.gitignore
+.gitmodules
+.vscode
+*.log
+*.swp
+*.swo
+*.swn
+*.swm
+volumes
