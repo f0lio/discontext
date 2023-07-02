@@ -1,4 +1,4 @@
-# kontext
+# Discontext
 
 A simple Discord bot that allows you to search for messages semantically.
 

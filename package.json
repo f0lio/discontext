@@ -1,5 +1,5 @@
 {
-  "name": "kontext",
+  "name": "discontext",
   "version": "1.0.0",
   "description": "A discord bot that uses embeddings for searching messages based on context",
   "main": "app.js",
