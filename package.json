@@ -14,9 +14,7 @@
   "author": "f0lio",
   "license": "ISC",
   "devDependencies": {
-    "@types/glob": "^8.1.0",
     "@types/node": "^20.2.5",
-    "@types/pg": "^8.10.2",
     "@types/uuid": "^9.0.2",
     "nodemon": "^2.0.22",
     "rimraf": "^5.0.1",
@@ -29,12 +27,7 @@
     "@zilliz/milvus2-sdk-node": "^2.2.16",
     "discord.js": "^14.11.0",
     "dotenv": "^16.1.4",
-    "glob": "^10.2.7",
     "openai": "^3.2.1",
-    "pg": "^8.11.0",
-    "pgvector": "^0.1.4",
-    "redis": "^4.6.7",
-    "uuid": "^9.0.0",
-    "winston": "^3.9.0"
+    "uuid": "^9.0.0"
   }
 }
