@@ -2,9 +2,22 @@
 
 A simple Discord bot that allows you to search for messages semantically.
 
+
+## Notes
+
+- I only started this project because I wanted to learn about word embeddings and vector databases, so I'm not sure if I'll ever finish it. If you want to use it, you'll have to figure out how to host it yourself.
+
+- This is clearly still a work in progress. Still needs a lot of work, especially on the database side. Vector databases are relatively easy to use, but hard to maintain.
+
+- Also, the reason I framed it as a Discord bot is because as much as I love the platform, its search functionality is not as good.
+I'm not sure if I'll ever get to a point where I can host this bot for others to use, but if I do, I'll update this section.
+
+- One last thing, I'm not sure if I'm using the right abstractions/structure as I'm not very experienced with TypeScript. Though, I tried to leverage some abstraction to make it easier to swap out the database and the embedding service. **If you have any suggestions, please let me know.**
+
+
 ## What is it?
 
-Its main purpose is to help you find messages that you know are in a server, but you can't remember exactly how they were phrased. It uses [OpenAI](https://openai.com/)'s [ada](https://platform.openai.com/docs/models/embeddings) model to generate embeddings for each message and store them in a vector database ([Qdrant](https://qdrant.tech/)). 
+Its main purpose is to help you find messages that you know are in a server (or not), but you can't remember exactly how they were phrased. It uses [OpenAI](https://openai.com/)'s [ada](https://platform.openai.com/docs/models/embeddings) model to generate embeddings for each message and store them in a vector database ([Qdrant](https://qdrant.tech/)). 
 <br>
 You can then search for messages that are semantically similar to a given query.
 
@@ -25,16 +38,6 @@ npm install
 bash start-db.sh      # Starts a docker container with a vector database
 npm run start:dev
 ```
-
-## Notes
-
-I only started this project because I wanted to learn about word embeddings and vector databases, so I'm not sure if I'll ever finish it. If you want to use it, you'll have to figure out how to host it yourself.
-<br>
-This is clearly still a work in progress. Still needs a lot of work, especially on the database side. Vector databases are relatively easy to use, but hard to maintain.
-<br>
-Also, the reason I framed it as a Discord bot is because as much as I love the platform, its search functionality is not as good.
-I'm not sure if I'll ever get to a point where I can host this bot for others to use, but if I do, I'll update this section.
-
 
 ### TODO (in no particular order)
 
