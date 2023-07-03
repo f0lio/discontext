@@ -29,14 +29,24 @@ class Qdrant extends AStorage {
 
   public async init() {
     try {
+      // commented out this block to keep the collection between restarts
+      /*
       if (config.isProduction === false) {
-        // await this.client.deleteCollection(COLLECTION_CONFIG.NAME);
+        await this.client.deleteCollection(COLLECTION_CONFIG.NAME);
         console.log(`[WARN] Collection ${COLLECTION_CONFIG.NAME} deleted`);
       }
-      if (await this.client.getCollection(COLLECTION_CONFIG.NAME)) {
-        console.log(`[INFO] Collection ${COLLECTION_CONFIG.NAME} exists`);
-        return;
+      */
+      try {
+        if (await this.client.getCollection(COLLECTION_CONFIG.NAME)) {
+          console.log(`[INFO] Collection ${COLLECTION_CONFIG.NAME} exists`);
+          return;
+        }
+      } catch (e) {
+        console.log(
+          `[INFO] Collection ${COLLECTION_CONFIG.NAME} does not exist`
+        );
       }
+      console.log(`[INFO] Creating collection ${COLLECTION_CONFIG.NAME}`);
       await this.client.createCollection(COLLECTION_CONFIG.NAME, {
         vectors: {
           size: COLLECTION_CONFIG.VECTOR_DIMENSION,
