@@ -25,7 +25,7 @@ You can then search for messages that are semantically similar to a given query.
 
 ## Demo video
 
-https://github.com/f0lio/discontext/assets/36214338/da696eae-4659-4537-8b55-d27fc8175814
+https://github.com/f0lio/discontext/assets/36214338/a3dc7675-ece4-4227-9205-cdcc95be6573
 
 ## Setup development environment
 
