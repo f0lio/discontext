@@ -23,6 +23,11 @@ You can then search for messages that are semantically similar to a given query.
 
 #### **P.S. messages that are created before the bot is added to the server are not indexed, thus not searchable (yet)**
 
+## Demo video
+<video width="640" height="480" controls>
+  <source src="./assets/demo.webm" type="video/webm">
+</video>
+
 ## Setup development environment
 
 You need to [create a Discord bot](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) and [add it to your server](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links).
