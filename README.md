@@ -24,9 +24,8 @@ You can then search for messages that are semantically similar to a given query.
 #### **P.S. messages that are created before the bot is added to the server are not indexed, thus not searchable (yet)**
 
 ## Demo video
-<video width="640" height="480" controls>
-  <source src="./assets/demo.webm" type="video/webm">
-</video>
+
+https://github.com/f0lio/discontext/assets/36214338/da696eae-4659-4537-8b55-d27fc8175814
 
 ## Setup development environment
 
