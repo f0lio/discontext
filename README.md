@@ -39,6 +39,7 @@ cp .env.template .env # And fill in the missing values
 Assuming you have [node](https://nodejs.org/en/) and [docker](https://www.docker.com/) installed, you can run the following commands to start the bot in development mode:
 ```bash
 npm install
+npm run commands:deploy # Deploys bot commands to your dev server (you need to do this every time you add a new command)
 bash start-db.sh      # Starts a docker container with a vector database
 npm run start:dev
 ```
